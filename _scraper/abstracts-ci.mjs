@@ -83,12 +83,18 @@ const ELS_INSTTOKEN = process.env.ELSEVIER_INST_TOKEN || '';
 const ELS_PACE_MS = Math.max(250, parseInt(process.env.FT50_ABS_ELS_PACE_MS || '', 10) || 350);
 const ELS_PREFIX = /^10\.1016\//;
 // Springer Nature Meta API (free key from dev.springernature.com — the META
-// key, not the Open Access one): serves abstracts for Springer/Palgrave/Kluwer
-// DOIs. Inert until a SPRINGER_API_KEY secret is set; the leg drops out for
+// key, not the Open Access one): serves abstracts for Springer Nature DOIs.
+// Inert until a SPRINGER_API_KEY secret is set; the leg drops out for
 // the run on 401/403/429 so a spent daily quota never stalls the others.
+// 10.1038 is THE prefix that matters in this shard — the whole Nature
+// portfolio (Nature, Nat. Hum. Behav., Nat. Commun.) mints under it, and
+// deposits NO abstract to Crossref. The inherited list carried only the
+// classic Springer/Palgrave/Kluwer prefixes, so every DOI here failed the
+// gate and the leg never ran at all. The other three are kept: this file is
+// vendored across the shards and a sibling may well hold such journals.
 const SPR_KEY = process.env.SPRINGER_API_KEY || '';
 const SPR_PACE_MS = Math.max(250, parseInt(process.env.FT50_ABS_SPR_PACE_MS || '', 10) || 400);
-const SPR_PREFIX = /^10\.(1007|1057|1023)\//;
+const SPR_PREFIX = /^10\.(1038|1007|1057|1023)\//;
 const NEEDY_MAX_LEN = 300; // mirror the INFORMS harvester's teaser threshold
 const T0 = Date.now();
 const day = () => Math.floor(Date.now() / 86400000);
